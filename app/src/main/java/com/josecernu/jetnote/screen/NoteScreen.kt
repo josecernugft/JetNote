@@ -25,7 +25,7 @@ import com.josecernu.jetnote.components.NoteButton
 import com.josecernu.jetnote.components.NoteInputText
 import com.josecernu.jetnote.data.NotesDataSource
 import com.josecernu.jetnote.model.Note
-import java.time.format.DateTimeFormatter
+import com.josecernu.jetnote.util.formatDate
 
 @Composable
 fun NoteScreen(
@@ -93,12 +93,14 @@ fun NoteScreen(
                     }
                 })
         }
+
         Divider(modifier = Modifier.padding(10.dp))
 
         LazyColumn{
             items(notes){ note ->
                 NoteRow(note = note, onNoteClicked = {
                     onRemoveNote(note)
+                    Toast.makeText(context, "Note Deleted", Toast.LENGTH_SHORT).show()
                 })
 
             }
@@ -130,7 +132,7 @@ fun NoteRow(
                 style = MaterialTheme.typography.subtitle2)
             Text(text = note.description,
                 style = MaterialTheme.typography.subtitle1)
-            Text(text = note.entryDate.format(DateTimeFormatter.ofPattern("EEE, d MMM")),
+            Text(text = formatDate(note.entryDate.time),
                 style = MaterialTheme.typography.caption)
 
         }
