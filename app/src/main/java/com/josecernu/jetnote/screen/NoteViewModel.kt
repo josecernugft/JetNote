@@ -1,6 +1,5 @@
 package com.josecernu.jetnote.screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.josecernu.jetnote.model.Note
@@ -17,20 +16,18 @@ import javax.inject.Inject
 class NoteViewModel @Inject constructor(private val repository: NoteRepository): ViewModel() {
     private val _noteList = MutableStateFlow<List<Note>>(emptyList())
     val noteList = _noteList.asStateFlow()
-    //private var noteList = mutableStateListOf<Note>()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllNotes().distinctUntilChanged()
                 .collect { listOfNotes ->
                     if (listOfNotes.isNullOrEmpty()) {
-                        Log.d("Empty", "Empty list")
+                        _noteList.value = emptyList()
                     } else {
                         _noteList.value = listOfNotes
                     }
                 }
         }
-        //noteList.addAll(NotesDataSource().loadNotes())
     }
 
     fun addNote(note: Note) = viewModelScope.launch { repository.addNote(note) }
